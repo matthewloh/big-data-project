@@ -1,0 +1,187 @@
+---
+title: "Lab 1: NumPy in Python"
+format:
+  html:
+    code-fold: false
+jupyter: python3
+author: "Matthew Loh"
+---
+
+- Use alt + enter to run line
+- Use ctrl + shift + enter to run cell
+- Use ctrl + shift + k to render the entire quarto document
+- Use gcp in normal mode to insert a python code cell
+
+```{python}
+import numpy as np
+
+# create a numpy array
+
+arr = np.array([1, 2, 3, 4, 5])
+print(arr)
+
+# perform a mathematical operation on the array
+
+arr_squared = np.square(arr)
+print(arr_squared)
+```
+
+```{python}
+import numpy as np
+
+# create a numpy array
+
+arr = np.array([0, 1, 2, 3])
+
+arr
+arr.ndim
+arr.shape
+
+print(arr, arr.ndim, arr.shape, len(arr))
+```
+
+# 2-D, 3-D, ...
+```{python}
+b = np.array([[0, 1, 2], [3, 4, 5]])  # 2 x 3 array
+b
+b.ndim
+len(b)
+
+c = np.array([[[1], [2]], [[3], [4]]])  # 2 x 3 array
+c
+c.shape
+```
+
+# Exercise: Simple arrays
+- Create a simple two dimensional array. First, redo the examples from
+above.And
+ then create your own: how about odd numbers counting backwards on the
+first row,
+ and even numbers on 
+ the second? 
+ - Use the functions len(),
+numpy.shape() on these arrays. How do they relate to each other? And to the ndim
+attribute of the arrays?
+
+# Function for creating arrays
+In practice, we rarely enter items one by one...
+
+
+- Evenly spaced:
+```{python}
+a = np.arange(10)  # 0 .. n-1  (!)
+a
+b = np.arange(1, 9, 2)  # start, end (exclusive), step
+b
+```
+
+- or by number of points:
+```{python}
+c = np.linspace(0, 1, 6)   # start, end, num-points
+c
+d = np.linspace(0, 1, 5, endpoint=False)
+d
+```
+
+- Common arrays:
+``` {python}
+a = np.ones((3, 3))  # reminder: (3, 3) is a tuple
+a
+b = np.zeros((2, 2))
+b
+c = np.eye(3)
+c
+d = np.diag(np.array([1, 2, 3, 4]))
+d
+```
+
+- np.random: random numbers (Mersenne Twister PRNG):
+```{python}
+a = np.random.rand(4)
+a
+b = np.random.randn(4)
+b
+np.random.seed(1234)  # Setting the random seed
+```
+
+# Exercise: Creating arrays using functions
+- Experiment with arange, linspace, ones, zeros, eye and diag.
+- Create different kinds of arrays with random numbers.
+- Try setting the seed before creating an array with random values.
+- Look at the function np.empty. What does it do? When might this be useful?
+
+# Basic data types
+You  may  have  noticed  that,  in  some  instances,  array  elements  are
+displayed  with  a  trailing  dot 
+ (e.g. 2. vs 2). This is due to a difference
+in the data-type used:
+
+```{python}
+a = np.array([1, 2, 3])
+a.dtype
+b = np.array([1.0, 2.0, 3.0])
+b.dtype
+```
+
+Different data-types allow us to store data more compactly in memory, but most
+of the time we simply 
+ work with floating point numbers. Note that, in the
+example above, NumPy auto-detects the data-type 
+ from the input. 
+ You can
+explicitly specify which data-type you want:
+
+```{python}
+c = np.array([1, 2, 3], dtype=float)
+c.dtype
+```
+
+The default data type is floating point
+```{python}
+a = np.ones((3, 3))
+a.dtype
+```
+
+There are other types:
+Complex
+```{python}
+d = np.array([1 + 2j, 3 + 4j, 5 + 6 * 1j])
+d.dtype
+```
+
+Bool
+```{python}
+e = np.array([True, False, False, True])
+e.dtype
+```
+
+Strings
+```{python}
+f = np.array(['Bonjour', 'Hello', 'Hallo',])
+f.dtype     # <--- strings containing max. 7 letters
+```
+
+# Basic visualization
+Now that we have our first data arrays, we are going to visualize them. 
+Matplotlib is a 2D plotting package. We can import its functions as below:
+```{python}
+import matplotlib.pyplot as plt
+```
+
+- 1D plotting:
+```{python}
+x = np.linspace(0, 3, 20)
+y = np.linspace(0, 9, 20)
+plt.plot(x, y)  # line plot
+# plt.show()  # <-- shows the plot (not needed with plt.show())
+
+plt.plot(x, y, "o")  # dot plot
+# plt.show()
+```
+
+- 2D arrays (such as images):
+```{python}
+image = np.random.rand(30, 30)
+plt.imshow(image, cmap=plt.cm.hot)
+plt.colorbar()
+```
