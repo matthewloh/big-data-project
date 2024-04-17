@@ -7,10 +7,10 @@ jupyter: python3
 author: "Matthew Loh"
 ---
 
-- Use alt + enter to run line
-- Use ctrl + shift + enter to run cell
-- Use ctrl + shift + k to render the entire quarto document
-- Use gcp in normal mode to insert a python code cell
+-   Use alt + enter to run line
+-   Use ctrl + shift + enter to run cell
+-   Use ctrl + shift + k to render the entire quarto document
+-   Use gcp in normal mode to insert a python code cell
 
 ```{python}
 import numpy as np
@@ -26,6 +26,7 @@ arr_squared = np.square(arr)
 print(arr_squared)
 ```
 
+# 1-D
 ```{python}
 import numpy as np
 
@@ -41,6 +42,7 @@ print(arr, arr.ndim, arr.shape, len(arr))
 ```
 
 # 2-D, 3-D, ...
+
 ```{python}
 b = np.array([[0, 1, 2], [3, 4, 5]])  # 2 x 3 array
 b
@@ -50,24 +52,38 @@ len(b)
 c = np.array([[[1], [2]], [[3], [4]]])  # 2 x 3 array
 c
 c.shape
+len(c)
 ```
 
 # Exercise: Simple arrays
-- Create a simple two dimensional array. First, redo the examples from
-above.And
- then create your own: how about odd numbers counting backwards on the
-first row,
- and even numbers on 
- the second? 
- - Use the functions len(),
-numpy.shape() on these arrays. How do they relate to each other? And to the ndim
-attribute of the arrays?
+
+-   Create a simple two dimensional array. First, redo the examples from above.And then create your own: how about odd numbers counting backwards on the first row, and even numbers on the second?
+-   Use the functions len(), numpy.shape() on these arrays. How do they relate to each other? And to the ndim attribute of the arrays?
+
+```{python}
+# Create a simple two dimensional array. First, redo the examples from above.
+two_dim_arr = np.array([[1, 3, 5], [2, 4, 6]])
+print(two_dim_arr)
+
+# Create your own: how about odd numbers counting backwards on the first row, and even numbers on the second?
+two_dim_arr = np.array([[5, 3, 1], [2, 4, 6]])
+print(two_dim_arr)
+
+# Use the functions len(), numpy.shape() on these arrays. How do they relate to each other? And to the ndim attribute of the arrays?
+print(len(two_dim_arr))
+print(np.shape(two_dim_arr))
+print(two_dim_arr.ndim)
+# len() returns the length of the first dimension of the array
+# np.shape() returns the shape of the array
+# ndim is an attribute that 
+```
 
 # Function for creating arrays
+
 In practice, we rarely enter items one by one...
 
+-   Evenly spaced:
 
-- Evenly spaced:
 ```{python}
 a = np.arange(10)  # 0 .. n-1  (!)
 a
@@ -75,7 +91,8 @@ b = np.arange(1, 9, 2)  # start, end (exclusive), step
 b
 ```
 
-- or by number of points:
+-   or by number of points:
+
 ```{python}
 c = np.linspace(0, 1, 6)   # start, end, num-points
 c
@@ -83,8 +100,9 @@ d = np.linspace(0, 1, 5, endpoint=False)
 d
 ```
 
-- Common arrays:
-``` {python}
+-   Common arrays:
+
+```{python}
 a = np.ones((3, 3))  # reminder: (3, 3) is a tuple
 a
 b = np.zeros((2, 2))
@@ -95,7 +113,8 @@ d = np.diag(np.array([1, 2, 3, 4]))
 d
 ```
 
-- np.random: random numbers (Mersenne Twister PRNG):
+-   np.random: random numbers (Mersenne Twister PRNG):
+
 ```{python}
 a = np.random.rand(4)
 a
@@ -105,16 +124,54 @@ np.random.seed(1234)  # Setting the random seed
 ```
 
 # Exercise: Creating arrays using functions
-- Experiment with arange, linspace, ones, zeros, eye and diag.
-- Create different kinds of arrays with random numbers.
-- Try setting the seed before creating an array with random values.
-- Look at the function np.empty. What does it do? When might this be useful?
+
+-   Experiment with arange, linspace, ones, zeros, eye and diag.
+-   Create different kinds of arrays with random numbers.
+-   Try setting the seed before creating an array with random values.
+-   Look at the function np.empty. What does it do? When might this be useful?
+
+```{python}
+# Experiment with arange, linspace, ones, zeros, eye and diag.
+a = np.arange(10)
+print(a)
+
+b = np.linspace(0, 1, 6)
+print(b)
+
+c = np.ones((3, 3))
+print(c)
+
+d = np.zeros((2, 2))
+print(d)
+
+e = np.eye(3)
+print(e)
+
+f = np.diag(np.array([1, 2, 3, 4]))
+print(f)
+
+# Create different kinds of arrays with random numbers.
+g = np.random.rand(4)
+print(g)
+
+h = np.random.randn(4)
+print(h)
+
+# Try setting the seed before creating an array with random values.
+np.random.seed(1234)
+i = np.random.rand(4)
+print(i)
+
+# Look at the function np.empty. What does it do? When might this be useful?
+j = np.empty((2, 2))
+print(j)
+
+# np.empty creates an array with random values. This might be useful when you need an array with random values but don't care about the specific values.
+```
 
 # Basic data types
-You  may  have  noticed  that,  in  some  instances,  array  elements  are
-displayed  with  a  trailing  dot 
- (e.g. 2. vs 2). This is due to a difference
-in the data-type used:
+
+You may have noticed that, in some instances, array elements are displayed with a trailing dot (e.g. 2. vs 2). This is due to a difference in the data-type used:
 
 ```{python}
 a = np.array([1, 2, 3])
@@ -123,13 +180,7 @@ b = np.array([1.0, 2.0, 3.0])
 b.dtype
 ```
 
-Different data-types allow us to store data more compactly in memory, but most
-of the time we simply 
- work with floating point numbers. Note that, in the
-example above, NumPy auto-detects the data-type 
- from the input. 
- You can
-explicitly specify which data-type you want:
+Different data-types allow us to store data more compactly in memory, but most of the time we simply work with floating point numbers. Note that, in the example above, NumPy auto-detects the data-type from the input. You can explicitly specify which data-type you want:
 
 ```{python}
 c = np.array([1, 2, 3], dtype=float)
@@ -137,51 +188,118 @@ c.dtype
 ```
 
 The default data type is floating point
+
 ```{python}
 a = np.ones((3, 3))
 a.dtype
 ```
 
-There are other types:
-Complex
+There are other types: Complex
+
 ```{python}
 d = np.array([1 + 2j, 3 + 4j, 5 + 6 * 1j])
 d.dtype
 ```
 
 Bool
+
 ```{python}
 e = np.array([True, False, False, True])
 e.dtype
 ```
 
 Strings
+
 ```{python}
 f = np.array(['Bonjour', 'Hello', 'Hallo',])
 f.dtype     # <--- strings containing max. 7 letters
 ```
 
 # Basic visualization
-Now that we have our first data arrays, we are going to visualize them. 
-Matplotlib is a 2D plotting package. We can import its functions as below:
+
+Now that we have our first data arrays, we are going to visualize them. Matplotlib is a 2D plotting package. We can import its functions as below:
+
 ```{python}
 import matplotlib.pyplot as plt
 ```
 
-- 1D plotting:
+-   1D plotting:
+
 ```{python}
 x = np.linspace(0, 3, 20)
 y = np.linspace(0, 9, 20)
 plt.plot(x, y)  # line plot
 # plt.show()  # <-- shows the plot (not needed with plt.show())
-
 plt.plot(x, y, "o")  # dot plot
 # plt.show()
 ```
 
-- 2D arrays (such as images):
+-   2D arrays (such as images):
+
 ```{python}
 image = np.random.rand(30, 30)
 plt.imshow(image, cmap=plt.cm.hot)
 plt.colorbar()
+```
+
+# Lab Scatterplot
+```{python}
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+plt.style.use("_mpl-gallery")
+# make the data
+np.random.seed(5)
+
+x = 4 + np.random.normal(0, 2, 24)
+y = 4 + np.random.normal(0, 2, len(x))
+
+# size and color
+sizes = np.random.uniform(15, 80, len(x))
+colors = np.random.uniform(15, 80, len(x))
+
+# plot
+fig, ax = plt.subplots()
+
+ax.scatter(x, y, s=sizes, c=colors, vmin=0, vmax=100)
+
+ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+       ylim=(0, 8), yticks=np.arange(1, 8))
+
+plt.show()
+```
+
+# Lab Mandelbrot
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def mandelbrot(h, w, maxit=20, r=2):
+    """Returns an image of the Mandelbrot fractal of size (h,w)."""
+    x = np.linspace(-2.5, 1.5, 4*h+1)
+    y = np.linspace(-1.5, 1.5, 3*w+1)
+    A, B = np.meshgrid(x, y)
+    C = A + B*1j
+    z = np.zeros_like(C)
+    divtime = maxit + np.zeros(z.shape, dtype=int)
+    # y, x = np.ogrid[-1.4:1.4:h*1j, -2:0.8:w*1j]
+    # c = x + y*1j
+    # z = c
+    # divtime = maxit + np.zeros(z.shape, dtype=int)
+
+    for i in range(maxit):
+        z = z**2 + C
+        # diverge = z*np.conj(z) > 2**2            # who is diverging
+        diverge = abs(z) > r
+        div_now = diverge & (divtime == maxit)  # who is diverging now
+        divtime[div_now] = i                  # note when
+        z[diverge] = 2                        # avoid diverging too much
+
+    return divtime
+
+
+plt.clf()
+plt.imshow(mandelbrot(400, 400))
 ```
