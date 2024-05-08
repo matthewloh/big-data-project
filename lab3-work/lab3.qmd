@@ -1,0 +1,11 @@
+---
+title: "Lab 3: NumPy in Python"
+format:
+  html:
+    code-fold: false
+jupyter: python3
+author: "Matthew Loh"
+---
+
+
+
