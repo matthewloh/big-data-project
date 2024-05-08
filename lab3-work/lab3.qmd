@@ -1,11 +1,227 @@
 ---
 title: "Lab 3: NumPy in Python"
 format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
   html:
     code-fold: false
 jupyter: python3
 author: "Matthew Loh"
 ---
 
+# A. Creating dataframes : reading data files or converting arrays
+```{python}
+import pandas as pd
+data = pd.read_csv('./brain_size.csv', sep=';', na_values=".")
+data
+```
 
+```{python}
+import numpy as np
+t = np.linspace(-6, 6, 20)
+sin_t = np.sin(t)
+cos_t = np.cos(t)
 
+pd.DataFrame({'t': t, 'sin': sin_t, 'cos': cos_t})
+```
+# B. Manipulating data
+```{python}
+data.shape  # 40 rows and 8 columns
+data.columns  # it has columns
+
+print(data['Gender'])
+# Simpler selector
+data[data['Gender'] == 'Female']['VIQ'].mean()
+
+groupby_gender = data.groupby('Gender')
+for gender, value in groupby_gender['VIQ']:
+    print((gender, value.mean()))
+
+groupby_gender.mean() 
+
+```
+# Exercise 3.1
+- What is the mean value for VIQ for the full population?
+- What is the average value of MRI counts, for males and females?
+
+```{python}
+# Mean value for VIQ
+print(data['VIQ'].mean())
+
+# Average value of MRI counts
+
+print(groupby_gender['MRI_Count'].mean())
+# Average value of MRI counts for males
+print(data[data['Gender'] == 'Male']['MRI_Count'].mean())
+print(data[data['Gender'] == 'Female']['MRI_Count'].mean())
+```
+
+# C. Plotting Data
+```{python}
+from pandas.plotting import scatter_matrix
+import matplotlib.pyplot as plt
+data = pd.read_csv('./brain_size.csv', sep=';', na_values=".")
+
+column1 = ['Weight', 'Height', 'MRI_Count']
+column2 = ['PIQ', 'VIQ', 'FSIQ']
+scatter_matrix(data[column1],
+               alpha=0.2, figsize=(6, 6), diagonal='hist')
+scatter_matrix(data[column2],
+               alpha=0.2, figsize=(6, 6), diagonal='hist')
+plt.show()
+
+from statsmodels.formula.api import ols
+model = ols("VIQ ~ Gender + MRI_Count + Height", data).fit()
+print(model.summary())
+```
+
+# Exercise 3.2
+- Plot the scatter matrix for males only, and for females only
+
+```{python}
+scatter_matrix = pd.plotting.scatter_matrix(
+    data[data['Gender'] == 'Male'][column1],
+    alpha=0.2, figsize=(6, 6), diagonal='hist')
+```
+
+# D-1: Linear models, multiple factors, and analysis of variance
+
+```{python}
+from statsmodels.formula.api import ols
+import numpy as np
+x = np.linspace(-5, 5, 20)
+np.random.seed(1)
+# normal distributed noise
+y = -5 + 3*x + 4 * np.random.normal(size=x.shape)
+# Plot the data
+plt.figure(figsize=(5, 4))
+plt.plot(x, y, 'o')
+# Create a data frame containing all the relevant variables
+data = pd.DataFrame({'x': x, 'y': y})
+
+model = ols("y ~ x", data).fit()
+print(model.summary())
+```
+
+# Exercise 3.3
+- Similar to the model above, use Analysis of Variance (ANOVA) on linear models, plot the fitted model and retrieve the parameter estimates.
+
+```{python}
+model = ols("y ~ x", data).fit()
+print(model.summary())
+
+# Plot the data
+plt.figure(figsize=(5, 4))
+plt.plot(x, y, 'o', label="data")
+plt.plot(x, model.fittedvalues, 'r--.', label="OLS")
+plt.legend()
+plt.show()
+
+```
+
+# D - 2: Multiple Regression: including multiple factors
+
+```{python}
+"""
+Multiple Regression
+====================
+Calculate using 'statsmodels' just the best fit, or all the corresponding
+statistical parameters.
+Also shows how to make 3d plots. Original author: Thomas Haslwanter
+"""
+
+from statsmodels.stats.anova import anova_lm
+from statsmodels.formula.api import ols
+import pandas
+import matplotlib.pyplot as plt
+import numpy as np
+
+# For statistics. Requires statsmodels 5.0 or more
+
+##############################################################################
+# Generate and show the data
+x = np.linspace(-5, 5, 21)
+# We generate a 2D grid
+X, Y = np.meshgrid(x, x)
+
+# To get reproducable values, provide a seed value
+np.random.seed(1)
+
+# Z is the elevation of this 2D grid
+Z = -5 + 3*X - 0.5*Y + 8 * np.random.normal(size=X.shape)
+
+# Plot the data
+# For 3d plots. This import is necessary to have 3D plotting below
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+surf = ax.plot_surface(X, Y, Z, cmap=plt.cm.coolwarm,
+                       rstride=1, cstride=1)
+ax.view_init(20, -120)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+##############################################################################
+# Multilinear regression model, calculating fit, P-values, confidence
+# intervals etc.
+# Convert the data into a Pandas DataFrame to use the formulas framework
+# in statsmodels
+
+# First we need to flatten the data: it's 2D layout is not relevant.
+X = X.flatten()
+Y = Y.flatten()
+Z = Z.flatten()
+data = pandas.DataFrame({'x': X, 'y': Y, 'z': Z})
+
+# Fit the model
+model = ols("z ~ x + y", data).fit()
+plt.show()
+
+# Print the summary
+print(model.summary())
+print("\nRetrieving manually the parameter estimates:")
+print(model._results.params)
+
+# Analysis of Variance (ANOVA) on linear models
+
+# Peform analysis of variance on fitted linear model
+anova_results = anova_lm(model)
+
+print('\nANOVA results')
+print(anova_results)
+```
+
+# the iris data
+
+```{python}
+import matplotlib.pyplot as plt
+import pandas
+from pandas.plotting import scatter_matrix
+from statsmodels.formula.api import ols
+
+# Data
+data = pandas.read_csv('iris.csv')
+
+categories = pandas.Categorical(data['name'])
+
+# The parameter 'c' is passed to plt.scatter and will control the color
+scatter_matrix(data, c=categories.codes, marker='o')
+
+fig = plt.gcf()
+fig.suptitle("blue: setosa, green: versicolor, red: virginica", size=13)
+```
+
+```{python}
+# Let us try to explain the sepal length as a function of the petal 
+# width and the category of iris 
+ 
+model = ols('sepal_width ~ name + petal_length', data).fit() 
+print(model.summary()) 
+ 
+# Now formulate a "contrast", to test if the offset for versicolor and virginica are identical 
+print('Testing the difference between effect of versicolor and virginica') 
+print(model.f_test([0, 1, -1, 0])) 
+plt.show() 
+```
