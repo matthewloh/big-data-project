@@ -1,0 +1,13 @@
+---
+title: "Lab 7"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  html:
+    code-fold: false
+jupyter: python3
+author: "Matthew Loh"
+---
+

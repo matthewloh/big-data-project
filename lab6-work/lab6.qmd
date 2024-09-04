@@ -1,0 +1,49 @@
+---
+title: "Lab 6"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  html:
+    code-fold: false
+jupyter: python3
+author: "Matthew Loh"
+---
+
+```{python}
+import numpy as np
+from sklearn.linear_model import LinearRegression
+# Create numpy arrays for height and weight
+X = np.array([60, 62, 64, 66, 68, 70, 72, 74, 76, 78]).reshape(-1, 1)
+y = np.array([110, 120, 130, 140, 150, 160, 170, 180, 190, 200])
+# Create a Linear Regression model
+model = LinearRegression()
+# Fit the model to the data
+model.fit(X, y)
+# Predict the weight of a person who is 68 inches tall
+height = np.array([[68]])
+weight = model.predict(height)
+print(f"A person who is 68 inches tall is predicted to weight {weight[0]:.2f} pounds.")
+```
+
+```{python}
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+# Create numpy arrays for age, BMI, and diabetes status
+age = np.array([25, 30, 35, 40, 45, 50, 55, 60, 65, 70])
+bmi = np.array([20, 22, 25, 27, 30, 32, 35, 37, 40, 42])
+diabetes = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 1])
+# Create a Logistic Regression model
+model = LogisticRegression()
+# Fit the model to the data
+X = np.column_stack((age, bmi))
+model.fit(X, diabetes)
+# Predict the probability of diabetes for a patient who is 50 years old and has a BMI of 32
+patient = np.array([[50, 32]])
+prob = model.predict_proba(patient)
+print(
+    f"The probability of diabetes for a patient who is 50 years old and has a BMI of 32 is {prob[0][1]:.2f}."
+)
+```
