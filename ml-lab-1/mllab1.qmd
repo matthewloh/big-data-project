@@ -29,6 +29,7 @@ print(f"y_train: {y_train}")
 
 ## Print Training Data Shape and Number of Examples
 ```{python}
+
 print(f"x_train.shape: {x_train.shape}")
 m = x_train.shape[0]
 print(f"Number of training examples is {m}")
@@ -41,6 +42,7 @@ i = 0  # Change this to 1 to see (x^1, y^1)
 x_i = x_train[i]
 y_i = y_train[i]
 print(f"(x^({i}), y^({i})) = ({x_i}, {y_i})")
+
 ```
 
 # Plot the Training Data Points
@@ -118,14 +120,14 @@ b = 100
 plot_model_prediction(x_train, y_train, w, b)
 ```
 
-## Trial 3 - Increase b, maintain w
+## Trial 3 -  w = 200, b = 100
 ```{python}
-w = 100
-b = 150
+w = 200
+b = 100
 plot_model_prediction(x_train, y_train, w, b)
 ```
 
-## Trial 4 - Optimum - Increase w by 98, increase b by 2.5
+## Trial 4 - Looks Right, not optimum - Increase w by 98, increase b by 2.5
 ```{python}
 w = 198
 b = 102.5
@@ -140,4 +142,68 @@ x_i = 1.2
 cost_1200sqft = w * x_i + b
 
 print(f"Cost of a 1200 sqft house: ${cost_1200sqft}k")
+```
+
+# Extra: Calculating Mean Square Error and Jwb Cost Function
+
+```{python}
+def compute_cost(y: np.ndarray, f_wb: np.ndarray) -> float:
+    """
+    Computes the mean squared error
+    Args:
+      y (np.ndarray (m,)): Target values
+      f_wb (np.ndarray (m,)): Model predictions
+    Returns:
+      cost (float): Mean squared error
+    """
+    m = y.shape[0]
+    cost = 0
+    for i in range(m):
+        cost += (y[i] - f_wb[i]) ** 2
+    cost /= 2 * m
+    return cost
+```
+
+## Compute Cost for Control Run
+```{python}
+w = 100
+b = 100
+f_wb = compute_model_output(x_train, w, b)
+cost = compute_cost(y_train, f_wb)
+print(f"Cost for control run: {cost}")
+```
+## Compute Cost for Trial 1
+```{python}
+w = 150
+b = 100
+f_wb = compute_model_output(x_train, w, b)
+cost = compute_cost(y_train, f_wb)
+print(f"Cost for trial 1: {cost}")
+```
+
+## Compute Cost for Trial 2
+```{python}
+w = 50
+b = 100
+f_wb = compute_model_output(x_train, w, b)
+cost = compute_cost(y_train, f_wb)
+print(f"Cost for trial 2: {cost}")
+```
+
+## Compute Cost for Trial 3
+```{python}
+w = 200
+b = 100
+f_wb = compute_model_output(x_train, w, b)
+cost = compute_cost(y_train, f_wb)
+print(f"Cost for trial 3: {cost}")
+```
+
+## Compute Cost for Trial 4
+```{python}
+w = 198
+b = 102.5
+f_wb = compute_model_output(x_train, w, b)
+cost = compute_cost(y_train, f_wb)
+print(f"Cost for trial 4: {cost}")
 ```
