@@ -1,5 +1,5 @@
 ---
-title: "Lab 2: Using Scikit and Numpy for MSE Calculations (11/09/2024)"
+title: "Lab 3: Linear Regression (18/09/2024)"
 format:
   pdf:
     toc: true
@@ -14,225 +14,6 @@ author: "Matthew Loh"
 ```{python}
 import numpy as np
 import matplotlib.pyplot as plt
-```
-
-# Define Training Data
-Lab 3 Consider the given data points: (1,1), (2,1), (3,2), (4,2), (5,4). 
-Regression line equation: Y = 0.7X – 0.1 
-## 1. Check whether the following is correct:   
-
-| X   | Y   | y hat |
-| --- | --- | ----- |
-| 1   | 1   | 0.6   |
-| 2   | 1   | 1.29  |
-| 3   | 2   | 1.99  |
-| 4   | 2   | 2.69  |
-| 5   | 4   | 3.4   |
-
-```{python}
-# Calculating from the equation
-def calculate_y_hat(x):
-    return 0.7 * x - 0.1
-
-
-x = [1, 2, 3, 4, 5]
-y = [1, 1, 2, 2, 4]
-y_hat = [calculate_y_hat(x[i]) for i in range(len(x))]
-
-print(y_hat)
-
-# [0.6, 1.2999999999999998, 1.9999999999999996, 2.6999999999999997, 3.4]
-print("The values are correct")
-```
-## 2. Check whether MSE = 0.21606 
-```{python}
-# Calculating MSE
-def calculate_mse(y, y_hat):
-    return np.mean((np.array(y) - np.array(y_hat)) ** 2)
-
-
-def calculate_mse_array_inputs(y, y_hat):
-    return np.mean((y - y_hat) ** 2)
-
-
-print(calculate_mse(y, y_hat))
-# Lab values
-# Given values
-Y_true = [1, 1, 2, 2, 4]  # Y_true = Y (original values)
-# calculated values
-Y_pred = [0.6, 1.29, 1.99, 2.69, 3.4]  # Y_pred = Y'
-# Calculation of Mean Squared Error (MSE)
-print(calculate_mse(Y_true, Y_pred))
-```
-## 3. There are TWO ways to automatically calculate MSE: 
-### a) Using scikit learn 
-```{python}
-
-from sklearn.metrics import mean_squared_error
-
-# Given values
-Y_true = [1, 1, 2, 2, 4]  # Y_true = Y (original values)
-# calculated values
-Y_pred = [0.6, 1.29, 1.99, 2.69, 3.4]  # Y_pred = Y'
-# Calculation of Mean Squared Error (MSE)
-mean_squared_error(Y_true, Y_pred)
-```
-### b) MSE using Numpy module
-```{python}
-import numpy as np
-# Given values
-Y_true = [1, 1, 2, 2, 4]  # Y_true = Y (original values)
-# calculated values
-Y_pred = [0.6, 1.29, 1.99, 2.69, 3.4]  # Y_pred = Y'
-# Mean squared Error
-MSE = np.square(np.subtract(Y_true, Y_pred)).mean()
-MSE
-```
-
-4. Use both functions to calculate MSE for the different W_s and b_s in your previous lab code from last week
-
-## Previous Lab Code
-```{python}
-# From previous lab code
-# x_train is the input variable (size in 1000 square feet)
-# y_train is the target (price in 1000s of dollars)
-x_train = np.array([1.0, 2.0])
-y_train = np.array([300.0, 500.0])
-print(f"x_train: {x_train}")
-print(f"y_train: {y_train}")
-
-
-def compute_model_output(x: np.ndarray, w: float, b: float) -> np.ndarray:
-    """
-    Computes the prediction of a linear model
-    Args:
-      x (np.ndarray (m,)): Data, m examples
-      w,b (scalar) : Model parameters
-    Returns:
-      y (ndarray (m,)) : target values
-    """
-    m = x.shape[0]
-    f_wb = np.zeros(m)
-    for i in range(m):
-        f_wb[i] = w * x[i] + b
-    return f_wb
-
-
-from sklearn.metrics import mean_squared_error
-import numpy as np
-
-
-def scikit_learn_mse(y_true, y_pred):
-    return mean_squared_error(y_true, y_pred)
-
-
-def numpy_mse(y_true, y_pred):
-    return np.square(np.subtract(y_true, y_pred)).mean()
-
-
-def output(x_train, y_train, w, b):
-    y_pred = compute_model_output(x_train, w, b)
-    print(f"y_pred: {y_pred}")
-    print(f"scikit learn mse: {scikit_learn_mse(y_train, y_pred)}")
-    print(f"numpy mse: {numpy_mse(y_train, y_pred)}")
-
-
-print(f"y_true: {y_train}")
-```
-### Trials
-```{python}
-w = 100
-b = 100
-output(x_train, y_train, w, b)
-```
-```{python}
-w = 150
-b = 100
-output(x_train, y_train, w, b)
-```
-
-```{python}
-w = 50
-b = 100
-output(x_train, y_train, w, b)
-```
-```{python}
-w = 200
-b = 100
-output(x_train, y_train, w, b)
-```
-
-```{python}
-w = 198
-b = 102.5
-output(x_train, y_train, w, b)
-```
-
-
-## Gradient Descent Understanding – based on lecture material
-```{python}
-def compute_cost(x: np.ndarray, y: np.ndarray, w: float, b: float) -> float:
-    """
-    Computes the cost function for linear regression.
-    Args:
-        x (ndarray): Shape (m,) Input to the model (Population of cities)
-        y (ndarray): Shape (m,) Label (Actual profits for the cities)
-        w, b (scalar): Parameters of the model
-    Returns
-        total_cost (float): The cost of using w,b as the parameters for linear regression
-               to fit the data points in x and y
-    """
-    # number of training examples
-    m = x.shape[0]
-
-    # You need to return this variable correctly
-    total_cost = 0
-
-    ### START CODE HERE ###
-    cost = 0
-    for i in range(m):
-        f_wb = w * x[i] + b
-        cost += (f_wb - y[i]) ** 2
-
-    total_cost = cost / (2 * m)
-
-    ### END CODE HERE ###
-
-    return total_cost
-
-```
-```{python}
-
-
-def compute_gradient(x, y, w, b):
-    """
-    Computes the gradient for linear regression
-    Args:
-      x (ndarray): Shape (m,) Input to the model (Population of cities)
-      y (ndarray): Shape (m,) Label (Actual profits for the cities)
-      w, b (scalar): Parameters of the model
-    Returns
-      dj_dw (scalar): The gradient of the cost w.r.t. the parameters w
-      dj_db (scalar): The gradient of the cost w.r.t. the parameter b
-    """# Number of training examples
-    m = x.shape[0]
-    
-    # You need to return the following variables correctly
-    dj_dw = 0
-    dj_db = 0
-    
-    ### START CODE HERE ### 
-    for i in range(m):
-        f_wb = w*x[i]+b
-        dj_db += f_wb - y[i]
-        dj_dw += (f_wb - y[i])*x[i]
-    dj_dw /= m
-    dj_db /= m
-    
-    ### END CODE HERE ### 
-        
-    return dj_dw, dj_db
-
 ```
 ```{python}
 # In this part of this exercise, we will implement linear regression with one
@@ -341,6 +122,74 @@ data = [
     (13.394, 9.0551),
     (5.4369, 0.61705),
 ]
+```
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Convert data to numpy arrays
+X = np.array([d[0] for d in data])
+y = np.array([d[1] for d in data])
+
+# Add intercept term to X
+X = np.column_stack((np.ones(X.shape[0]), X))
+
+
+def compute_cost(X, y, theta):
+    m = len(y)
+    predictions = X.dot(theta)
+    cost = (1 / (2 * m)) * np.sum((predictions - y) ** 2)
+    return cost
+
+
+def gradient_descent(X, y, theta, alpha, iterations):
+    m = len(y)
+    cost_history = []
+
+    for _ in range(iterations):
+        predictions = X.dot(theta)
+        theta = theta - (alpha / m) * X.T.dot(predictions - y)
+        cost = compute_cost(X, y, theta)
+        cost_history.append(cost)
+
+    return theta, cost_history
+
+
+# Initialize parameters
+theta = np.zeros(2)
+iterations = 1500
+alpha = 0.01
+
+# Run gradient descent
+theta, cost_history = gradient_descent(X, y, theta, alpha, iterations)
+
+# Print the final parameters
+print(f"Final theta values: {theta}")
+
+# Plotting the results
+plt.figure(figsize=(10, 6))
+plt.scatter(X[:, 1], y, color="red", marker="x", label="Training Data")
+plt.plot(X[:, 1], X.dot(theta), color="blue", label="Linear Regression")
+plt.xlabel("Population of City in 10,000s")
+plt.ylabel("Profit in $10,000s")
+plt.title("Food Truck Profit Prediction")
+plt.legend()
+plt.show()
+
+
+# Function to predict profit
+def predict_profit(population, theta):
+    return theta[0] + theta[1] * population
+
+
+# Example usage
+population = 7.0
+predicted_profit = predict_profit(population, theta)
+print(
+    f"For population = {population*10000}, predicted profit = ${predicted_profit*10000:.2f}"
+)
 ```
 ```{python}
 
