@@ -15,6 +15,7 @@ author: "Matthew Loh"
 import numpy as np
 import matplotlib.pyplot as plt
 ```
+
 ```{python}
 # In this part of this exercise, we will implement linear regression with one
 # variable to predict profits for a food truck. Suppose you are the CEO of a
